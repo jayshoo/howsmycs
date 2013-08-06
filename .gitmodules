@@ -1,0 +1,3 @@
+[submodule "lolclient"]
+	path = lolclient
+	url = git@github.com:nagash/node-lol-client.git
