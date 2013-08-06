@@ -4,6 +4,10 @@ var express = require('express');
 var app = express.createServer();
 
 var LolClient = require('./lolclient/lol-client');
+// temporary hack to add oce region
+LolClient.prototype._rtmpHosts['oce'] = 'prod.oc1.lol.riotgames.com';
+LolClient.prototype._loginQueueHosts['oce'] = 'lq.oc1.lol.riotgames.com';
+
 var client = new LolClient({
   region: 'oce',
   username: config.logins.oce[0],
