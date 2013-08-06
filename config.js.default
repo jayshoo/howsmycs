@@ -1,0 +1,14 @@
+var config = {};
+
+config.webHost = 'joshu.net';
+config.webPort = 4400;
+
+// the prefix to all howsmycs-related redis data
+config.redisHash = 'howsmycs';
+
+// login data per region
+config.logins = {
+  'oce': ['username', 'password']
+};
+
+module.exports = config;

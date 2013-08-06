@@ -1,0 +1,14 @@
+doctype 5
+html
+  head
+    link(rel='stylesheet', href='/style.css')
+    style(type='text/css')
+      div.box { border: solid black 1px; }
+  body
+    - each match in data.object.gameStatistics.data
+      div.box
+        - each datum in match.object.statistics.data
+          div
+            =datum.object.statType
+            &nbsp;
+            =datum.object.value.value
