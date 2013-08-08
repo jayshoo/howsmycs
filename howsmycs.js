@@ -1,7 +1,7 @@
 var config = require('./config');
 
 var express = require('express');
-var app = express.createServer();
+var app = express();
 
 var LolClient = require('./lolclient/lol-client');
 
