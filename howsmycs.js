@@ -5,15 +5,14 @@ var app = express();
 
 var LolClient = require('./lolclient/lol-client');
 
-// LolClient comes with na/eu regions only; let's inject the others
+// LolClient comes with na/eu regions only; let's wipe and load all regions
+LolClient.prototype._rtmpHosts = [];
+LolClient.prototype._loginQueueHosts = [];
+
 var regionData = require('./lolregiondata');
 for (var index in regionData) {
   var region = regionData[index];
   var code = region[0].toLowerCase();
-
-  // don't add regions we already have
-  if (Object.keys(LolClient.prototype._rtmpHosts).indexOf(code) >= 0)
-    continue;
 
   LolClient.prototype._rtmpHosts[code] = region[3];
   LolClient.prototype._loginQueueHosts[code] = region[4];
