@@ -28,8 +28,22 @@ var client = new LolClient({
 
 client.on('connection', function() {
   console.log('Connected to League RTMP server.');
+  keepAlive();
 });
 client.connect();
+
+// RTMP server drops connection after awhile
+// Let's keep the connection alive if possible
+// TODO: find an actual sanctioned "ping" RTMP method
+var keepAliveSecs = 60;
+function keepAlive() {
+  console.log('ping...');
+  client.getSummonerByName('j0shu', function(err, summoner) {
+    console.log('...pong!');
+  });
+  setTimeout(keepAlive, 1000*keepAliveSecs);
+}
+
 
 app.listen(config.webPort);
 
