@@ -18,24 +18,31 @@ for (var index in regionData) {
   LolClient.prototype._loginQueueHosts[code] = region[4];
 }
 
-var client = new LolClient({
-  region: 'oce',
-  username: config.logins.oce[0],
-  password: config.logins.oce[1],
-  version: '3.10.13_07_26_19_59'
-});
+// connect to all the regions set up in the config
+var clients = {}; // manage a LolClient per region, keyed by region code
+for (var region in config.logins) {
+  console.log('Connecting to '+region+'...');
+  var client = new LolClient({
+    region: region,
+    username: config.logins[region][0],
+    password: config.logins[region][1],
+    version: '3.10.github.com/jayshoo/howsmycs'
+  });
+  client.on('connection', function onConnect() {
+    console.log('RTMP client connected to '+this.options.region);
+    clients[this.options.region] = client;
+    keepAlive(client);
+  });
 
-client.on('connection', function() {
-  console.log('Connected to League RTMP server.');
-  keepAlive();
-});
-client.connect();
+  client.connect();
+}
+
 
 // RTMP server drops connection after awhile
 // Let's keep the connection alive if possible
 // TODO: find an actual sanctioned "ping" RTMP method
-var keepAliveSecs = 60;
-function keepAlive() {
+var keepAliveSecs = 300;
+function keepAlive(client) {
   console.log('ping...');
   client.getSummonerByName('j0shu', function(err, summoner) {
     console.log('...pong!');
@@ -59,10 +66,11 @@ app.get('/', function(req, res) {
   res.render('index', { config: config });
 });
 
-app.get('/summoner/:name', function(req, res) {
-  client.getSummonerByName(req.params.name, function(err, summoner) {
+app.get('/:region/:name/history', function(req, res) {
+  var client = clients[req.params.region];
+  client.getSummonerByName(req.params.name, function onSummoner(err, summoner) {
     var acctId = summoner.object.acctId.value;
-    client.getMatchHistory(acctId, function(err, history) {
+    client.getMatchHistory(acctId, function onMatchHistory(err, history) {
       res.render('history', { data: history });
     });
   });
