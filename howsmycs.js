@@ -47,7 +47,10 @@ function keepAlive(client) {
   client.getSummonerByName('j0shu', function(err, summoner) {
     console.log('...pong!');
   });
-  setTimeout(keepAlive, 1000*keepAliveSecs);
+  setTimeout(
+    function() { keepAlive(client); },
+    1000*keepAliveSecs
+  );
 }
 
 
